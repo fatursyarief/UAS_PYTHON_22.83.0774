@@ -1,0 +1,43 @@
+import requests
+import time
+
+# Ganti dengan API key dari OpenWeatherMap
+API_KEY = "74b12ef952aad2fd9d1ffeda056854a7"
+BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
+
+# Fungsi untuk mendapatkan cuaca
+def get_weather(city):
+    params = {
+        "q": city,  # Nama kota berasal dari parameter
+        "appid": API_KEY,
+        "units": "metric",  # Gunakan satuan Celcius
+    }
+    try:
+        response = requests.get(BASE_URL, params=params)
+        data = response.json()
+        if response.status_code == 200:
+            city_name = data["name"]
+            temp = data["main"]["temp"]
+            weather_desc = data["weather"][0]["description"]
+            print(f"Cuaca di {city_name}:")
+            print(f"- Suhu: {temp}°C")
+            print(f"- Deskripsi: {weather_desc.capitalize()}")
+        else:
+            print(f"Error {response.status_code}: {data['message']}")
+    except Exception as e:
+        print(f"Terjadi kesalahan: {e}")
+
+# Fungsi untuk otomatisasi
+def weather_automation(city, interval):
+    while True:
+        print("\n=== Update Cuaca ===")
+        get_weather(city)
+        print(f"Update berikutnya dalam {interval} detik...")
+        time.sleep(interval)
+
+# Menu utama
+if __name__ == "__main__":
+    print("=== Weather Automation ===")
+    city = input("Masukkan nama kota: ")
+    interval = int(input("Masukkan interval pembaruan (dalam detik): "))
+    weather_automation(city, interval)
